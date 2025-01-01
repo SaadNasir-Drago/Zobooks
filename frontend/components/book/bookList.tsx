@@ -101,7 +101,7 @@ export default function BookList() {
       setIsLoading(true);
       try {
         const response = await fetch( //https://disturbed-devan-saadnasir-602e9ad5.koyeb.app
-          `http://localhost:4000/books?sort=${sort}&search=${search}&genre=${genre.genre_id}&page=${page}&limit=20`
+          `https://disturbed-devan-saadnasir-602e9ad5.koyeb.app/books?sort=${sort}&search=${search}&genre=${genre.genre_id}&page=${page}&limit=20`
         );
         const data = await response.json();
         setBooks((prevBooks) =>
@@ -152,7 +152,7 @@ export default function BookList() {
     try {
       // If currently the opposite reaction exists, remove that first
       if (currentUserLikeStatus === oppositeAction) {
-        await fetch("http://localhost:4000/likeDislike", {
+        await fetch("https://disturbed-devan-saadnasir-602e9ad5.koyeb.app/likeDislike", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -181,7 +181,7 @@ export default function BookList() {
         );
       }
 
-      const response = await fetch("http://localhost:4000/likeDislike", {
+      const response = await fetch("https://disturbed-devan-saadnasir-602e9ad5.koyeb.app/likeDislike", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -274,7 +274,7 @@ export default function BookList() {
       //    remove that first by sending favorited: oppositeAction
       //    This is analogous to removing a "like" before adding a "dislike" in handleLikeDislike.
       if (currentFavoriteStatus === oppositeAction) {
-        await fetch("http://localhost:4000/favorite", {
+        await fetch("https://disturbed-devan-saadnasir-602e9ad5.koyeb.app/favorite", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -305,7 +305,7 @@ export default function BookList() {
       // 2) Perform the main toggle request
       //    - If user wasn't favorited, we send favorited: true
       //    - If user was favorited, we send favorited: false (removal)
-      const response = await fetch("http://localhost:4000/favorite", {
+      const response = await fetch("https://disturbed-devan-saadnasir-602e9ad5.koyeb.app/favorite", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

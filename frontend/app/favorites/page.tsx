@@ -1,12 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Pagination,
   PaginationContent,
@@ -30,7 +25,6 @@ export default function FavoriteBooks() {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-
   useEffect(() => {
     fetchFavoriteBooks();
   }, []);
@@ -39,13 +33,16 @@ export default function FavoriteBooks() {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:4000/profileFavorites", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "https://disturbed-devan-saadnasir-602e9ad5.koyeb.app/profileFavorites",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to fetch books");
 
@@ -101,9 +98,7 @@ export default function FavoriteBooks() {
         <Card key={book.book_id} className="mb-4 shadow-sm">
           {/* Card Header */}
           <CardHeader>
-            <CardTitle className="text-2xl md:text-3xl">
-              {book.title}
-            </CardTitle>
+            <CardTitle className="text-2xl md:text-3xl">{book.title}</CardTitle>
           </CardHeader>
 
           {/* Card Content */}
