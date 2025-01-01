@@ -1,0 +1,24 @@
+.mapboxgl-map {
+  height: 100%;
+  width: 100%;
+}
+
+.mapboxgl-canvas {
+  outline: none;
+}
+
+.mapboxgl-ctrl-logo {
+  display: none !important;
+}
+
+/* Optional: Style the navigation controls */
+.mapboxgl-ctrl-group {
+  background-color: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.mapboxgl-ctrl-group button {
+  width: 36px !important;
+  height: 36px !important;
+}

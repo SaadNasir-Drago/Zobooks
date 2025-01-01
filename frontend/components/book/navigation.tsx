@@ -47,6 +47,12 @@ function Navigation() {
     setIsLoggedIn(false);
   };
 
+  // New function to handle Zolo button click
+  const handleZolo = () => {
+    // Navigate to the second_app root
+    router.push("/second_app");
+  };
+
   return (
     <div className="sticky flex justify-between flex-wrap items-center mb-0 p-4 px-8">
       <Link href="/">
@@ -59,7 +65,10 @@ function Navigation() {
           style={{ width: 250, height: 50 }}
         />
       </Link>
-
+       {/* Zolo Button (Redirects to second_app) */}
+       <Button variant="default" className="bg-green-600" onClick={handleZolo}>
+          Zolo
+        </Button>
       <div className="flex items-center flex-wrap gap-4">
         {/* Search Input */}
         <Input
@@ -97,6 +106,8 @@ function Navigation() {
             Register
           </Button>
         </Link>
+
+       
 
         {isLoggedIn ? (
           <>
