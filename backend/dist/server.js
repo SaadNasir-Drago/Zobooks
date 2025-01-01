@@ -12,7 +12,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.esClient = void 0;
 const express_1 = __importDefault(require("express"));
 const cookieParser = require('cookie-parser');
 const cors_1 = __importDefault(require("cors"));
@@ -21,7 +20,7 @@ const authRoute_1 = __importDefault(require("./routes/authRoute"));
 const userRoute_1 = __importDefault(require("./routes/userRoute"));
 const cors_2 = require("./middlewares/cors");
 const body_parser_1 = __importDefault(require("body-parser"));
-const { Client } = require('@elastic/elasticsearch');
+// import { transferUserData, transferBookData, transferGenreData, transferLikeData, transferGenreBookData } from './scripts/elasticSearch';
 // Configure the server
 const server = (0, express_1.default)();
 const port = 4000;
@@ -31,19 +30,19 @@ server.use(body_parser_1.default.json()); // Middleware for parsing JSON
 server.use(body_parser_1.default.urlencoded({ extended: true })); // Middleware for parsing URL-encoded data
 server.use('/uploads', express_1.default.static('src/uploads')); // Middleware to serve static files
 // Create Elasticsearch client
-exports.esClient = new Client({
-    node: 'https://localhost:9200',
-    auth: {
-        username: 'elastic', // Replace with your username
-        password: 'qEc-GaadE7RX+qNlhfQ2' // Replace with your password
-    },
-    tls: {
-        rejectUnauthorized: false // Disable certificate validation
-    },
-    ssl: {
-        rejectUnauthorized: false // Disable certificate validation
-    }
-});
+// export const esClient = new Client({
+//   node: 'https://localhost:9200',
+//   auth: {
+//     username: 'elastic', // Replace with your username
+//     password: 'qEc-GaadE7RX+qNlhfQ2'  // Replace with your password
+//   },
+//   tls: {
+//     rejectUnauthorized: false // Disable certificate validation
+//   },
+//   ssl: {
+//     rejectUnauthorized: false // Disable certificate validation
+//   }
+// });
 // Function to test Elasticsearch connection
 // const testElasticSearchConnection = async () => {
 //   try {

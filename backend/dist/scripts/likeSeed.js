@@ -93,7 +93,10 @@ exports.cleanBooksArray = cleanBooksArray;
 // Function to insert like data into PostgreSQL
 const seedLikes = (likes, users, books) => __awaiter(void 0, void 0, void 0, function* () {
     const booksArray = (0, exports.cleanBooksArray)(books);
-    for (const likeData of likes) {
+    // Limit to the first 500 users
+    const limitedlikes = likes.slice(0, 200);
+    const limitedUsers = users.slice(0, 200);
+    for (const likeData of limitedlikes) {
         const cleanedLike = cleanLikeData(likeData);
         try {
             const queryText = `
@@ -104,8 +107,8 @@ const seedLikes = (likes, users, books) => __awaiter(void 0, void 0, void 0, fun
         )
         ON CONFLICT (like_id) DO NOTHING;
       `;
-            const user_id = getRandomNumber(1, users.length);
-            const book_id = getRandomNumber(1, 1189650);
+            const user_id = getRandomNumber(1, limitedUsers.length);
+            const book_id = getRandomNumber(1, 200);
             const values = [
                 cleanedLike.liked,
                 user_id,

@@ -104,7 +104,6 @@ export default function BookList() {
           `http://localhost:4000/books?sort=${sort}&search=${search}&genre=${genre.genre_id}&page=${page}&limit=20`
         );
         const data = await response.json();
-        console.log(data)
         setBooks((prevBooks) =>
           page === 1 ? data.books : [...prevBooks, ...data.books]
         );

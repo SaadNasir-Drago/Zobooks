@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useContext } from "react";
-import { Button } from "@/components/ui/button";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -21,7 +20,6 @@ import { useToast } from "@/hooks/use-toast";
 import Navigation from "@/components/book/navigation";
 import { Book as BookType } from "../../../backend/src/types";
 import { User } from "lucide-react";
-import { SelectedBookContext } from "@/context/bookContext";
 
 export default function FavoriteBooks() {
   const placeholder = "https://placehold.jp/150x150.png";
@@ -32,8 +30,6 @@ export default function FavoriteBooks() {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // We still have access to setSelectedBook if needed for future features
-  const { setSelectedBook } = useContext(SelectedBookContext);
 
   useEffect(() => {
     fetchFavoriteBooks();

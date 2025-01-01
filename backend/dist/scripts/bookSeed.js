@@ -47,7 +47,10 @@ const getRandomUserId = (users) => {
 // Function to insert data into PostgreSQL
 const seedBooks = (books, user) => __awaiter(void 0, void 0, void 0, function* () {
     const cleanBooks = (0, exports.cleanBooksArray)(books);
-    for (const cleanedBook of cleanBooks) {
+    // Limit to the first 500 users
+    const limitedbooks = cleanBooks.slice(0, 200);
+    const limitedUsers = user.slice(0, 200);
+    for (const cleanedBook of limitedbooks) {
         try {
             const queryText = `
         INSERT INTO books (
@@ -68,7 +71,7 @@ const seedBooks = (books, user) => __awaiter(void 0, void 0, void 0, function* (
                 cleanedBook.author,
                 cleanedBook.description,
                 cleanedBook.publisher,
-                getRandomUserId(user),
+                getRandomUserId(limitedUsers),
             ];
             yield (0, database_1.query)(queryText, values);
         }

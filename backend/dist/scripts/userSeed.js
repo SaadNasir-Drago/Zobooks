@@ -35,7 +35,9 @@ const cleanUserData = (user) => {
 };
 // Function to insert user data into PostgreSQL
 const seedUsers = (users) => __awaiter(void 0, void 0, void 0, function* () {
-    for (const userData of users) {
+    // Limit to the first 500 users
+    const limitedUsers = users.slice(0, 200);
+    for (const userData of limitedUsers) {
         const cleanedUser = cleanUserData(userData);
         try {
             const queryText = `

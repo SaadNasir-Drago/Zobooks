@@ -35,4 +35,5 @@ router.post('/likeDislike', cookieJwtAuth_1.cookieJwtAuth, bookController.likeDi
 router.get('/genres', bookController.getGenres);
 router.put('/updateBook/:id', localImageUpload_1.uploadSingle, bookController.updateBook);
 router.delete('/book/:id', bookController.deleteBook);
+router.post('/favorite', cookieJwtAuth_1.cookieJwtAuth, bookController.favoriteBook);
 exports.default = router;

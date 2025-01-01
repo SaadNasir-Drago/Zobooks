@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    // This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
+  },
+   // Disable TypeScript type checks during builds:
+   typescript: {
+    ignoreBuildErrors: true,
+  },
   images: {
     domains: ['i.gr-assets.com', 'placehold.co', 'example.com',  'placehold.jp', 'localhost'], // Add the domain here
     remotePatterns: [

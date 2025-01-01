@@ -72,7 +72,6 @@ export const getUserFavorites = async (user_id: number): Promise<Book[] | null |
       `,
       [user_id]
     );
-    console.log(result)
 
     return result.rows || null;
   } catch (error) {

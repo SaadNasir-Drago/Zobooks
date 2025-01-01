@@ -56,7 +56,9 @@ const seedGenreBooks = (books, genres) => __awaiter(void 0, void 0, void 0, func
         console.warn("No valid books to seed.");
         return;
     }
-    for (const bookData of booksArray) {
+    // Limit to the first 500 users
+    const limitedbooks = booksArray.slice(0, 200);
+    for (const bookData of limitedbooks) {
         try {
             // const bookId = await getRandomBookIdFromDatabase();
             // const genreId = await getRandomGenreIdFromDatabase();
@@ -82,7 +84,7 @@ const seedGenreBooks = (books, genres) => __awaiter(void 0, void 0, void 0, func
             //  const randomBookId = bookIds[Math.floor(Math.random() * bookIds.length)];
             const randomGenreId = genreIds[Math.floor(Math.random() * genreIds.length)];
             // const genre_id = getRandomNumber(1, genres.length);
-            const book_id = getRandomNumber(1, 1189650);
+            const book_id = getRandomNumber(1, 200);
             const queryText = `
         INSERT INTO genre_books (
           book_id, genre_id

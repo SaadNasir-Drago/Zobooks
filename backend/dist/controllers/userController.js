@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserById = exports.getUserBooks = exports.createUser = void 0;
+exports.getUserFavorites = exports.getUserById = exports.getUserBooks = exports.createUser = void 0;
 const userModel = __importStar(require("../models/userModel"));
 const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -68,3 +68,15 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getUserById = getUserById;
+const getUserFavorites = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const user_id = parseInt(req.body.user_id); // Ensure user_id is parsed as a number
+    try {
+        const favorites = yield userModel.getUserFavorites(user_id);
+        res.status(200).json(favorites);
+    }
+    catch (error) {
+        console.error("Error fetching favorite books:", error);
+        res.status(500).send("Error retrieving favorite books");
+    }
+});
+exports.getUserFavorites = getUserFavorites;

@@ -32,6 +32,7 @@ export const getUserById = async (req: Request, res: Response) => {
     res.status(500).send("Error retrieving user");
   }
 };
+
 export const getUserFavorites = async (req: Request, res: Response) => {
   const user_id = parseInt(req.body.user_id); // Ensure user_id is parsed as a number
 

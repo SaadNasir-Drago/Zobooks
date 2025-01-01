@@ -16,17 +16,19 @@ const userSeed_1 = require("./scripts/userSeed");
 const genreSeed_1 = require("./scripts/genreSeed");
 const likeSeed_1 = require("./scripts/likeSeed");
 const genreBookSeed_1 = require("./scripts/genreBookSeed");
-const oneMillion_1 = require("./scripts/oneMillion");
 const bookData = require("./data/books.json");
 const userData = require("./data/user.json");
 const genreData = require("./data/Genre.json");
 const likeData = require("./data/Like.json");
 const sql = new pg_1.Pool({
-    user: "postgres",
-    host: "localhost",
+    user: "instabooksdb_owner",
+    host: "ep-flat-hill-a6j8zxyr.us-west-2.aws.neon.tech",
     port: 5432,
-    database: "postgres",
-    password: "root",
+    database: "instabooksdb",
+    password: "nf81xPpNSrvJ",
+    ssl: {
+        rejectUnauthorized: false, // This is not recommended for production
+    },
 });
 const query = (text, params) => sql.query(text, params);
 exports.query = query;
@@ -94,7 +96,7 @@ CREATE TABLE IF NOT EXISTS genre_books (
             yield (0, userSeed_1.seedUsers)(userData);
         }
         if (!(yield checkIfTableHasData('books'))) {
-            yield (0, bookSeed_1.seedBooks)((0, oneMillion_1.duplicateDatasetToMillionEntries)(bookData, 1200000), userData);
+            yield (0, bookSeed_1.seedBooks)(bookData, userData);
         }
         if (!(yield checkIfTableHasData('likes'))) {
             yield (0, likeSeed_1.seedLikes)(likeData, userData, bookData);

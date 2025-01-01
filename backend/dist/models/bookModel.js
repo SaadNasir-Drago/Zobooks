@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.likeDislikeBook = exports.getGenres = exports.deleteBook = exports.updateBook = exports.createBook = exports.getBookById = exports.getBooks = void 0;
+exports.favoriteBook = exports.likeDislikeBook = exports.getGenres = exports.deleteBook = exports.updateBook = exports.createBook = exports.getBookById = exports.getBooks = void 0;
 const database_1 = require("../database");
 const getBooks = (limit, offset, search, sort, genreId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -39,25 +39,41 @@ const getBooks = (limit, offset, search, sort, genreId) => __awaiter(void 0, voi
             queryParams.push(genreId);
         }
         const result = yield (0, database_1.query)(`
-      SELECT b.*, 
-             COALESCE(l.likes_count, 0)::integer AS likes, 
-             COALESCE(l.dislikes_count, 0)::integer AS dislikes 
-      FROM (
-          SELECT DISTINCT b.book_id
-          FROM books b
-          LEFT JOIN genre_books gb ON b.book_id = gb.book_id
-          WHERE b.title ILIKE $3 ${genreFilter}
-      ) AS unique_books
-      JOIN books b ON b.book_id = unique_books.book_id
-      LEFT JOIN (
-          SELECT book_id, 
-                 SUM(CASE WHEN liked = true THEN 1 ELSE 0 END) AS likes_count, 
-                 SUM(CASE WHEN liked = false THEN 1 ELSE 0 END) AS dislikes_count 
-          FROM likes 
-          GROUP BY book_id
-      ) l ON b.book_id = l.book_id
-      ${orderByClause}
-      LIMIT $1 OFFSET $2
+      SELECT 
+    b.*,
+    COALESCE(l.likes_count, 0)::integer AS likes,
+    COALESCE(l.dislikes_count, 0)::integer AS dislikes,
+    COALESCE(f.favorites_count, 0)::integer AS "favoritesCount"
+FROM (
+    SELECT DISTINCT b.book_id
+    FROM books b
+    LEFT JOIN genre_books gb ON b.book_id = gb.book_id
+    WHERE b.title ILIKE $3
+    ${genreFilter}  -- e.g. AND gb.genre_id = $someGenreId
+) AS unique_books
+JOIN books b 
+    ON b.book_id = unique_books.book_id
+LEFT JOIN (
+    SELECT 
+      book_id, 
+      SUM(CASE WHEN liked = true THEN 1 ELSE 0 END) AS likes_count,
+      SUM(CASE WHEN liked = false THEN 1 ELSE 0 END) AS dislikes_count
+    FROM likes
+    GROUP BY book_id
+) l 
+    ON b.book_id = l.book_id
+LEFT JOIN (
+    SELECT
+      book_id,
+      -- Count how many "favorited" = true
+      SUM(CASE WHEN favorited = true THEN 1 ELSE 0 END) AS favorites_count
+    FROM favorites
+    GROUP BY book_id
+) f
+    ON b.book_id = f.book_id
+${orderByClause}
+LIMIT $1 OFFSET $2
+
     `, queryParams);
         const genreFilter2 = genreId ? "AND gb.genre_id = $2" : "";
         const countResult = yield (0, database_1.query)(`
@@ -129,7 +145,6 @@ const createBook = (book) => __awaiter(void 0, void 0, void 0, function* () {
 exports.createBook = createBook;
 const updateBook = (book_id, book) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log(book);
         // Update the main book details in the books table
         const queryText1 = `
       UPDATE books 
@@ -207,7 +222,6 @@ const likeDislikeBook = (likeDislike) => __awaiter(void 0, void 0, void 0, funct
         let updateMessage;
         if (currentState.rows.length === 0) {
             // No existing record, insert a new one
-            // console.log("Inserting new record");
             updateQuery = `INSERT INTO likes (user_id, book_id, liked) VALUES ($1, $2, $3)`;
             queryParams = [likeDislike.user_id, likeDislike.book_id, likeDislike.liked];
             updateMessage = likeDislike.liked ? "Book liked successfully" : "Book disliked successfully";
@@ -251,3 +265,54 @@ const likeDislikeBook = (likeDislike) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.likeDislikeBook = likeDislikeBook;
+const favoriteBook = (favorite) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        // First, check the current state in the database
+        const currentState = yield (0, database_1.query)(`SELECT favorited FROM favorites WHERE user_id = $1 AND book_id = $2`, [favorite.user_id, favorite.book_id]);
+        let updateQuery;
+        let queryParams; // Parameters to be passed to the query
+        let updateMessage;
+        if (currentState.rows.length === 0) {
+            // No existing record, insert a new one
+            updateQuery = `INSERT INTO favorites (user_id, book_id, favorited) VALUES ($1, $2, $3)`;
+            queryParams = [favorite.user_id, favorite.book_id, favorite.favorited];
+            updateMessage = favorite.favorited ? "Book favorited successfully" : "Book unfavorited successfully";
+        }
+        else {
+            const currentFavorited = currentState.rows[0].favorited;
+            if (favorite.favorited) {
+                // User is trying to favorite
+                if (currentFavorited === true) {
+                    updateQuery = `UPDATE favorites SET favorited = NULL WHERE user_id = $1 AND book_id = $2`;
+                    updateMessage = "Favorite removed";
+                    queryParams = [favorite.user_id, favorite.book_id]; // Only 2 parameters
+                }
+                else {
+                    updateQuery = `UPDATE favorites SET favorited = TRUE WHERE user_id = $1 AND book_id = $2`;
+                    updateMessage = "Book favorited successfully";
+                    queryParams = [favorite.user_id, favorite.book_id]; // Only 2 parameters
+                }
+            }
+            else {
+                // User is trying to unfavorite
+                if (currentFavorited === false) {
+                    updateQuery = `UPDATE favorites SET favorited = NULL WHERE user_id = $1 AND book_id = $2`;
+                    updateMessage = "Unfavorite removed";
+                    queryParams = [favorite.user_id, favorite.book_id]; // Only 2 parameters
+                }
+                else {
+                    updateQuery = `UPDATE favorites SET favorited = FALSE WHERE user_id = $1 AND book_id = $2`;
+                    updateMessage = "Book unfavorited successfully";
+                    queryParams = [favorite.user_id, favorite.book_id]; // Only 2 parameters
+                }
+            }
+        }
+        yield (0, database_1.query)(updateQuery, queryParams);
+        return { success: true, message: updateMessage };
+    }
+    catch (error) {
+        console.error("Error in favoriteBook:", error);
+        throw error;
+    }
+});
+exports.favoriteBook = favoriteBook;

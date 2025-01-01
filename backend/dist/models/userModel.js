@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserBooks = exports.getUserById = exports.createUser = void 0;
+exports.getUserFavorites = exports.getUserBooks = exports.getUserById = exports.createUser = void 0;
 const database_1 = require("../database");
 const createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -58,3 +58,23 @@ const getUserBooks = (user_id) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getUserBooks = getUserBooks;
+const getUserFavorites = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield (0, database_1.query)(`
+      SELECT 
+        books.*, 
+        ARRAY_AGG(genres.genre_name) AS genres
+      FROM books
+      LEFT JOIN genre_books ON books.book_id = genre_books.book_id
+      LEFT JOIN genres ON genre_books.genre_id = genres.genre_id
+      INNER JOIN favorites ON books.book_id = favorites.book_id
+      WHERE favorites.user_id = $1
+      GROUP BY books.book_id
+      `, [user_id]);
+        return result.rows || null;
+    }
+    catch (error) {
+        console.log("database error", error);
+    }
+});
+exports.getUserFavorites = getUserFavorites;

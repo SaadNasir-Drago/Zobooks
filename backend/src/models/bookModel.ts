@@ -166,7 +166,6 @@ export const createBook = async (book: any): Promise<void> => {
 
 export const updateBook = async (book_id: number, book: Partial<Book>): Promise<void> => {
   try {
-    console.log(book);
 
     // Update the main book details in the books table
     const queryText1 = `
@@ -248,7 +247,6 @@ export const likeDislikeBook = async (
   likeDislike: Like
 ): Promise<{ success: boolean; message?: string }> => {
   try {
-    console.log(likeDislike)
     // First, check the current state in the database
     const currentState = await query(
       `SELECT liked FROM likes WHERE user_id = $1 AND book_id = $2`,

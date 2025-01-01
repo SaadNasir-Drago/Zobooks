@@ -32,8 +32,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getGenres = exports.likeDislikeBook = exports.deleteBook = exports.updateBook = exports.createBook = exports.getBooks = void 0;
+exports.favoriteBook = exports.getGenres = exports.likeDislikeBook = exports.deleteBook = exports.updateBook = exports.createBook = exports.getBooks = void 0;
 const bookModel = __importStar(require("../models/bookModel"));
+// import { getElasticGenres } from "../elasticmodels/elasticBook";
 // import { esClient } from "../server";
 // import { getBooks as elasticBook } from "../config/elasticSearch";
 const getBooks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -144,3 +145,28 @@ const getGenres = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getGenres = getGenres;
+const favoriteBook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield bookModel.favoriteBook(req.body);
+        if (result.success) {
+            res.status(200).json({
+                success: result.success,
+                message: result.message
+            });
+        }
+        else {
+            res.status(200).json({
+                success: result.success,
+                message: result.message
+            });
+        }
+    }
+    catch (error) {
+        console.error("Error in favoriteBook controller:", error);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while processing your request"
+        });
+    }
+});
+exports.favoriteBook = favoriteBook;

@@ -30,4 +30,5 @@ const cookieJwtAuth_1 = require("../middlewares/cookieJwtAuth");
 router.post('/createUser', userController.createUser);
 router.get('/profileBooks', cookieJwtAuth_1.cookieJwtAuth, userController.getUserBooks);
 router.get('/profileUser', cookieJwtAuth_1.cookieJwtAuth, userController.getUserById);
+router.get('/profileFavorites', cookieJwtAuth_1.cookieJwtAuth, userController.getUserFavorites);
 exports.default = router;
